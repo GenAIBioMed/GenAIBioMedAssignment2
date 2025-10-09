@@ -1,0 +1,3 @@
+[submodule "DNALongBench"]
+	path = DNALongBench
+	url = https://github.com/wenduocheng/DNALongBench.git
