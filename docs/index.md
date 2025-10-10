@@ -53,7 +53,7 @@ pip install matplotlib scipy
 After setting up the environment, you will need to fix a dependency issue.
 Flash-attn package requires `GLIBC_2.32`, while PSC has the version 2.28.
 
-Follow the following steps mentioned in this [github comment](https://github.com/Dao-AILab/flash-attention/issues/1708#issuecomment-3283420504): 
+Follow the following steps mentioned in this [github comment](https://github.com/Dao-AILab/flash-attention/issues/1708#issuecomment-3283420504) by `NewComer00`. 
 
 1. Build polyfill-glibc with feat/single-threaded support
 2. Get the path to flash-attn's .so lib
