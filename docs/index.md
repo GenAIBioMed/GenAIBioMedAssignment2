@@ -81,7 +81,7 @@ This line adds the environment variable to your `.bashrc` file, so it is set aut
 ### Dataset Path
 
 We have downloaded the **Contact Map Prediction** dataset and have placed it in the shared directory (`
-/ocean/projects/cis250160p/rhettiar/contact_map_prediction/`). The scripts that you will use for fintuning already has this path set as the default data path. Therefore, if you plan to run the scripts elsewhere make sure to edit `data_path`.
+/ocean/projects/cis250160p/rhettiar/contact_map_prediction/`). The scripts that you will use for fintuning already has this path set as the default data path. Therefore, if you plan to run the scripts on a different cluster make sure to edit `data_path`.
 
 If you are running on PSC, the dataloader will automatically use this path to load the data. If you are running on a different machine, download the dataset from [this link](https://dataverse.harvard.edu/citation?persistentId=doi:10.7910/DVN/AZM25S)
 
@@ -99,11 +99,11 @@ git clone https://github.com/GenAIBioMed/GenAIBioMedAssignment2
 ```
 
 ### a) Integrate with `wandb` (for experiment tracking)
-Your first task is to edit the finetuning code (`finetune_contact_map.py`). Fill in the sections marked `TODO` to integrate Weights & Biases (`wandb`) for experiment tracking. Then run finetuning with `python finetune_contact_map.py`. If you have successfully 
+Your first task is to edit the finetuning code (`finetune_contact_map.py`). Fill in the sections marked `TODO` to integrate Weights & Biases (`wandb`) for experiment tracking. Then run finetuning with `python finetune_contact_map.py`. You can refer to this documentation when learning about wandb [Getting Started with Weights & Biases](https://docs.wandb.ai/quickstart/).
 
-### b) Run Finetuning
+### b) Run Finetuning & Evaluation
 
-Activate your `evo2` environment and run the fine-tuning script. Remember to set your model cache path.
+Activate your `evo2` environment and run the fine-tuning script. The lines below loads cuda and sets the huggingface cache path to the shared folder.
 
 ```bash
 conda activate evo2
@@ -111,8 +111,6 @@ module load cuda/12.4.0
 export HF_HOME=/ocean/projects/cis250160p/rhettiar
 python finetune_contact_map.py
 ```
-
-### c) Run Evaluation
 
 After training is complete, use your best model checkpoint to run the evaluation script.
 
@@ -123,6 +121,16 @@ export HF_HOME=/ocean/projects/cis250160p/rhettiar
 python evaluate_contact_map.py
 ```
 
+### Visualize the predictions & Compute correlation scores
+
+The evaluation script only saves the raw prediction data. You need to create a new Python script (e.g., `visualize.py`) to load the `pred.npy` and `target.npy` files and generate plots.
+
+Your visualization script should:
+
+- Load the prediction and target arrays using numpy.load().
+- Use matplotlib.pyplot.imshow or seaborn.heatmap to plot the matrices.
+- Calculate and display the PCC and SCC scores for your plots
+
 -----
 
 ## 4\. Analysis & Submission
@@ -132,7 +140,7 @@ Compress the following into a single **zip file** for submission.
 1.  **Modified Python Files:**
 
       * `finetune_contact_map.py` (with `wandb` integration)
-      * The code you used for analysis and plotting
+      * The code you developed for visualizing contact maps and computing
 
 2.  **PDF Report:** Your report must include:
 
