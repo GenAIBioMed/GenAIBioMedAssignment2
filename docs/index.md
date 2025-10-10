@@ -6,9 +6,9 @@ The [`DNALongBench`](https://github.com/ma-compbio/DNALONGBENCH) paper introduce
 
 ![DNALongBench Overview](https://github.com/ma-compbio/DNALONGBENCH/raw/main/Figure1.v3.png)
 
-In this assignment, you will fine-tune **Evo2**, a state-of-the-art genomic foundation model, on this **Contact Map Prediction** task. You will learn to manage a complex deep learning environment, use Weights & Biases (`wandb`) for experiment tracking, and visually analyze the model's predictions to interpret what it has learned.
+In this assignment, you will fine-tune **Evo2**, a state-of-the-art genomic foundation model, on this **Contact Map Prediction** task.
 
-
+You will learn to manage a complex deep learning environment, use Weights & Biases (`wandb`) for experiment tracking, and visually analyze the model's predictions to interpret what it has learned.
 
 ---
 
@@ -81,9 +81,10 @@ This line adds the environment variable to your `.bashrc` file, so it is set aut
 ### Dataset Path
 
 We have downloaded the **Contact Map Prediction** dataset and have placed it in the shared directory (`
-/ocean/projects/cis250160p/rhettiar/contact_map_prediction/`). 
+/ocean/projects/cis250160p/rhettiar/contact_map_prediction/`). The scripts that you will use for fintuning already has this path set as the default data path. Therefore, if you plan to run the scripts elsewhere make sure to edit `data_path`.
 
 If you are running on PSC, the dataloader will automatically use this path to load the data. If you are running on a different machine, download the dataset from [this link](https://dataverse.harvard.edu/citation?persistentId=doi:10.7910/DVN/AZM25S)
+
 
 
 -----
@@ -94,11 +95,11 @@ If you are running on PSC, the dataloader will automatically use this path to lo
 Clone this assignemnt 2 repository to your working directory.
 
 ```bash
-https://github.com/GenAIBioMed/GenAIBioMedAssignment2
+git clone https://github.com/GenAIBioMed/GenAIBioMedAssignment2
 ```
 
-### a) Instrument with `wandb`
-Your first task is to edit the finetuning code (`filetune_contact_map.py`). Fill in the sections marked `TODO` to integrate Weights & Biases (`wandb`) for experiment tracking. Then run finetuning with `python filetune_contact_map.py`. If you have successfully 
+### a) Integrate with `wandb` (for experiment tracking)
+Your first task is to edit the finetuning code (`finetune_contact_map.py`). Fill in the sections marked `TODO` to integrate Weights & Biases (`wandb`) for experiment tracking. Then run finetuning with `python finetune_contact_map.py`. If you have successfully 
 
 ### b) Run Finetuning
 
@@ -106,8 +107,9 @@ Activate your `evo2` environment and run the fine-tuning script. Remember to set
 
 ```bash
 conda activate evo2
+module load cuda/12.4.0
 export HF_HOME=/ocean/projects/cis250160p/rhettiar
-python filetune_contact_map.py
+python finetune_contact_map.py
 ```
 
 ### c) Run Evaluation
@@ -116,8 +118,9 @@ After training is complete, use your best model checkpoint to run the evaluation
 
 ```bash
 conda activate evo2
-export TRANSFORMERS_CACHE="/scratch/your_username/cache"
-python test/evaluate_contact_map.py --data_path /scratch/your_username/data/dnalongbench/contact_map --checkpoint_path /path/to/your/best/checkpoint.pt
+module load cuda/12.4.0
+export HF_HOME=/ocean/projects/cis250160p/rhettiar
+python evaluate_contact_map.py
 ```
 
 -----
@@ -128,8 +131,8 @@ Compress the following into a single **zip file** for submission.
 
 1.  **Modified Python Files:**
 
-      * `test/filetune_contact_map.py` (with `wandb` integration)
-      * `test/evaluate_contact_map.py` (if you made any changes for analysis)
+      * `finetune_contact_map.py` (with `wandb` integration)
+      * The code you used for analysis and plotting
 
 2.  **PDF Report:** Your report must include:
 
