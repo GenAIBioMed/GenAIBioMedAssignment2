@@ -6,7 +6,7 @@ The [`DNALongBench`](https://www.biorxiv.org/content/10.1101/2025.01.06.631595v1
 
 ![DNALongBench Overview](https://github.com/ma-compbio/DNALONGBENCH/raw/main/Figure1.v3.png)
 
-In this assignment, you will fine-tune **Evo2** (7B), a DNA foundation model, on this **Contact Map Prediction** task. Ideally we would like to finetune the whole 7B model for this task, however, for simplicity, we will use the embeddings of this model to train a lightweight prediction head that learns to map these complex DNA features into a final contact map.
+In this assignment, you will use **Evo2** (7B), a DNA foundation model, on this **Contact Map Prediction** task. Ideally we would like to finetune the whole 7B model for this task, however, for simplicity, we will use the embeddings of this model to train a lightweight prediction head that learns to map these complex DNA features into a final contact map.
 
 You will learn to manage a complex deep learning environment, use Weights & Biases (`wandb`) for experiment tracking, and visually analyze the model's predictions to interpret what it has learned.
 
