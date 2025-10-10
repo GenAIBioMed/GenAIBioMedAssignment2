@@ -14,23 +14,29 @@ In this assignment, you will fine-tune **Evo2**, a state-of-the-art genomic foun
 
 ## 1. Environment Setup
 
-**IMPORTANT:** This assignment requires access to **NVIDIA H100 GPUs**. You must first request a GPU node on the cluster *before* setting up the Conda environments. This ensures that Conda can correctly detect the CUDA toolkit.
+**IMPORTANT:** This assignment requires access to **NVIDIA H100 GPUs** (Since Evo2 requires device compute capability 8.9 or higher required for FP8 execution). 
+
+You must first request a GPU node on the cluster *before* setting up the Conda environments. This ensures that Conda can correctly detect the CUDA toolkit.
 
 **Example: Requesting a GPU Node (SLURM)**
 ```bash
 srun --partition=GPU-shared --gres=gpu:h100-80:1 --time=0:20:00 --account=cis250160p --pty bash
 ```
 
-### Evo2 Environment (for model fine-tuning)
+### **Evo2 Environment (for model fine-tuning)**
 
+
+You will need to run the following commmands everytime you attempt to train the model.
 ```bash
 module load anaconda3/2024.10-1
 module load cuda/12.4.0
+```
 
+Create a conda evnvironment named `evo2` with Python 3.12 and install the required packages.
+
+```bash
 conda create -n evo2 python=3.12 -y
 conda activate evo2
-
-
 
 conda install -c conda-forge transformer-engine-torch=2.3.0
 pip install flash-attn==2.8.0.post2 --no-build-isolation
@@ -38,9 +44,10 @@ pip install flash-attn==2.8.0.post2 --no-build-isolation
 pip install evo2
 pip install natsort
 pip install tensorflow==2.17.0
+pip install wandb
 ```
 
-### Fixing a version issue with glibc (Follow instructions carefully)
+### **Fixing a version issue with glibc (follow these instructions carefully)**
 
 After setting up the environment, you will need to fix a dependency issue.
 Flash-attn package requires `GLIBC_2.32`, while PSC has the version 2.28.
@@ -52,17 +59,20 @@ Follow the following steps mentioned in this [github comment](https://github.com
 3. Get your current GLIBC version
 4. Patch flash-attn's .so lib
 
-After you perform these steps, in the evo2 environement try running this command `python3 -c "import flash_attn"`. If it succeeds without error, you are good to go! If you are having trouble at this step, reach out to us on edstem.
+After you perform these steps, in the evo2 environement try running this command `python3 -c "import flash_attn"`. If it succeeds without error, you are good to go! Now you have a conda environment that supports Evo2 and Flash-attn! 
+
+If you are having trouble at this step, make a post on edstem.
 
 -----
 
 ## 2\. Data paths and Huggingface cache dir
 
-### Huggingface Cache Directory
+### Huggingface Cache Directory (for model weights)
 
 We have downloaded the Evo2 model weight on PSC. Therefore run this command to make sure huggingface looks at the correct location for the model weights. Otherwise it will download the weights to your home directory which has limited space.
 
 ```bash
+export HF_HOME=/ocean/projects/cis250160p/rhettiar
 echo 'export HF_HOME=/ocean/projects/cis250160p/rhettiar' >> ~/.bashrc;
 ```
 
@@ -75,39 +85,20 @@ We have downloaded the **Contact Map Prediction** dataset and have placed it in 
 
 If you are running on PSC, the dataloader will automatically use this path to load the data. If you are running on a different machine, download the dataset from [this link](https://dataverse.harvard.edu/citation?persistentId=doi:10.7910/DVN/AZM25S)
 
-**Example Path:**
-
-```bash
-# Create a data directory in your scratch space
-mkdir -p /scratch/your_username/data/dnalongbench
-# Download and unzip the data into the directory above
-```
-
-### Pretrained Model Cache
-
-The Evo2 model weights will be downloaded automatically by the script. To avoid filling up your home directory, specify a cache location in your scratch space using an environment variable.
-
-**Example:**
-
-```bash
-export TRANSFORMERS_CACHE="/scratch/your_username/cache"
-```
 
 -----
 
 ## 3\. Finetuning & Evaluation
 
-**IMPORTANT:** All training and evaluation commands must be run from within the `evo2` repository directory.
 
-First, navigate to the correct directory:
+Clone this assignemnt 2 repository to your working directory.
 
 ```bash
-cd evo2
+https://github.com/GenAIBioMed/GenAIBioMedAssignment2
 ```
 
 ### a) Instrument with `wandb`
-
-Your first task is to edit the `test/filetune_contact_map.py` script. Fill in the sections marked `TODO` to integrate Weights & Biases (`wandb`) for experiment tracking. Please **do not change the existing hyperparameters**.
+Your first task is to edit the finetuning code (`filetune_contact_map.py`). Fill in the sections marked `TODO` to integrate Weights & Biases (`wandb`) for experiment tracking. Then run finetuning with `python filetune_contact_map.py`. If you have successfully 
 
 ### b) Run Finetuning
 
@@ -115,8 +106,8 @@ Activate your `evo2` environment and run the fine-tuning script. Remember to set
 
 ```bash
 conda activate evo2
-export TRANSFORMERS_CACHE="/scratch/your_username/cache"
-python test/filetune_contact_map.py --data_path /scratch/your_username/data/dnalongbench/contact_map
+export HF_HOME=/ocean/projects/cis250160p/rhettiar
+python filetune_contact_map.py
 ```
 
 ### c) Run Evaluation
