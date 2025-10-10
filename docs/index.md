@@ -16,11 +16,14 @@ You will learn to manage a complex deep learning environment, use Weights & Bias
 
 **IMPORTANT:** This assignment requires access to **NVIDIA H100 GPUs** (Since Evo2 requires device compute capability 8.9 or higher required for FP8 execution). 
 
-You must first request a GPU node on the cluster *before* setting up the Conda environments. This ensures that Conda can correctly detect the CUDA toolkit.
+You must first request a GPU node on the cluster *before* setting up the Conda environments. This ensures that Conda can [correctly detect the CUDA toolkit](https://github.com/conda-forge/tensorflow-feedstock/issues/174#issuecomment-1031003478).
 
 **Example: Requesting a GPU Node (SLURM)**
+
+**A Note on HPC Etiquette:** Please use short, interactive srun sessions (e.g., --time=0:40:00) for setup and debugging. For the final, long-running training, always submit a non-interactive batch (sbatch) job. This is the standard and most considerate way to use shared GPU resources. This practice ensures that valuable GPU time is reserved for active computation, benefiting all users on the cluster.
+
 ```bash
-srun --partition=GPU-shared --gres=gpu:h100-80:1 --time=1:00:00 --account=cis250160p --pty bash
+srun --partition=GPU-shared --gres=gpu:h100-80:1 --time=0:40:00 --account=cis250160p --pty bash
 ```
 
 ### **Evo2 Environment (for model fine-tuning)**
