@@ -2,11 +2,11 @@
 
 ## Overview
 
-The [`DNALongBench`](https://github.com/ma-compbio/DNALONGBENCH) paper introduced a set of challenging problems in genomics that require understanding long-range dependencies in DNA. One of the most difficult tasks is predicting the 3D folding of chromatin (a "contact map") from a 1D DNA sequence of over 1 million base pairs.
+The [`DNALongBench`](https://www.biorxiv.org/content/10.1101/2025.01.06.631595v1.full.pdf) paper introduced a set of challenging problems in genomics that require understanding long-range dependencies in DNA. One of the most difficult tasks is predicting the 3D folding of chromatin (a "contact map") from a 1D DNA sequence of over 1 million base pairs.
 
 ![DNALongBench Overview](https://github.com/ma-compbio/DNALONGBENCH/raw/main/Figure1.v3.png)
 
-In this assignment, you will fine-tune **Evo2**, a state-of-the-art genomic foundation model, on this **Contact Map Prediction** task.
+In this assignment, you will fine-tune **Evo2** (7B), a state-of-the-art genomic foundation model, on this **Contact Map Prediction** task.
 
 You will learn to manage a complex deep learning environment, use Weights & Biases (`wandb`) for experiment tracking, and visually analyze the model's predictions to interpret what it has learned.
 
@@ -20,7 +20,7 @@ You must first request a GPU node on the cluster *before* setting up the Conda e
 
 **Example: Requesting a GPU Node (SLURM)**
 ```bash
-srun --partition=GPU-shared --gres=gpu:h100-80:1 --time=0:20:00 --account=cis250160p --pty bash
+srun --partition=GPU-shared --gres=gpu:h100-80:1 --time=1:00:00 --account=cis250160p --pty bash
 ```
 
 ### **Evo2 Environment (for model fine-tuning)**
@@ -45,6 +45,7 @@ pip install evo2
 pip install natsort
 pip install tensorflow==2.17.0
 pip install wandb
+pip install matplotlib scipy
 ```
 
 ### **Fixing a version issue with glibc (follow these instructions carefully)**
@@ -103,7 +104,7 @@ Your first task is to edit the finetuning code (`finetune_contact_map.py`). Fill
 
 ### b) Run Finetuning & Evaluation
 
-Activate your `evo2` environment and run the fine-tuning script. The lines below loads cuda and sets the huggingface cache path to the shared folder.
+Activate your `evo2` environment and run the fine-tuning script. The script is configured to use the evo2_7b model by default. The lines below loads cuda and sets the huggingface cache path to the shared folder.
 
 ```bash
 conda activate evo2
@@ -121,32 +122,37 @@ export HF_HOME=/ocean/projects/cis250160p/rhettiar
 python evaluate_contact_map.py
 ```
 
-### Visualize the predictions & Compute correlation scores
+#### Visualize Predictions & Analyze Performance
 
-The evaluation script only saves the raw prediction data. You need to create a new Python script (e.g., `visualize.py`) to load the `pred.npy` and `target.npy` files and generate plots.
+The `evaluate_contact_map.py` script saves the raw prediction and target data. You will create a new Python script (e.g., `analyze_performance.py`) to process these files.
 
-Your visualization script should:
+Your script must perform two key tasks:
 
-- Load the prediction and target arrays using numpy.load().
-- Use matplotlib.pyplot.imshow or seaborn.heatmap to plot the matrices.
-- Calculate and display the PCC and SCC scores for your plots
+1.  **Calculate Overall Performance:**
+    * Load the `pred.npy` and `target.npy` files.
+    * Iterate through every sample in the test set. For each sample, calculate the Pearson (PCC) and Spearman (SCC) correlation coefficient between the predicted and the ground truth contact map.
+    * Compute the **average PCC and SCC** across the *entire* test set. These values represent your model's overall performance.
 
------
+2.  **Generate a Representative Visualization:**
+    * After calculating all scores, find a single genomic region from the test set that demonstrates good performance (e.g., its score is near or above the average).
+    * Generate a plot for this single example. The figure should contain two subplots: the **Ground Truth** map and your **Finetuned Prediction**.
+    * Use `matplotlib.pyplot.imshow` to display the 50x50 matrices.
+    * Clearly label each subplot with the specific PCC and SCC calculated for that individual example.
 
-## 4\. Analysis & Submission
+---
+
+## 4. Analysis & Submission
 
 Compress the following into a single **zip file** for submission.
 
 1.  **Modified Python Files:**
-
-      * `finetune_contact_map.py` (with `wandb` integration)
-      * The code you developed for visualizing contact maps and computing
+    * `finetune_contact_map.py` (with `wandb` integration).
+    * `analyze_performance.py` (the script you wrote for calculation and visualization).
 
 2.  **PDF Report:** Your report must include:
-
-      * A link to your public `wandb` project page showing your training curves.
-      * A **case-study visualization figure**. You will need to write your own plotting code (e.g., with Matplotlib) to generate this.
-          * First, inspect your evaluation results to find a genomic region from the test set with a high Pearson (PCC) or Spearman (SCC) score.
-          * Your figure should contain two subplots: the **Ground Truth** contact map and your **Finetuned Evo2 Prediction** for that region.
-          * Label each subplot clearly with its PCC and SCC score.
-      * A **written analysis** comparing your Evo2 results to the baselines in the DNALongBench paper (CNN, Akita). Discuss potential reasons for Evo2's effectiveness on this long-range dependency task.
+    * A link to your public `wandb` experiment's report showing your training curves.
+    * **Overall Performance Metrics:** State the **average PCC and SCC** you calculated across the entire test set.
+    * **Representative Visualization:** Include the visualization figure you generated for a single, high-performing example. Ensure the subplots are clearly labeled with their specific scores.
+    * **Written Analysis:** Your analysis should address the following points in a few short paragraphs:
+        1.  **Performance Comparison:** Based on your average scores, does your fine-tuned Evo2 model achieve better or worse performance than the CNN baseline reported in the DNALongBench [paper](https://www.biorxiv.org/content/10.1101/2025.01.06.631595v1.full.pdf)?
+        2.  **Discussion:** Whether it performs better or worse, discuss potential reasons for this outcome. What could have we done in the finetuning script for better performance?
