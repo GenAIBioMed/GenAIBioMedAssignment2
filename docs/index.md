@@ -135,7 +135,7 @@ python evaluate_contact_map.py
 
 ### c) Towards better performance
 
-Above we have only trained for 10 epochs, and for a subset of data: `test-0.tfr`  `train-0.tfr`  `valid-0.tfr`. Try out one of the follwing to see how you might improve the prediction head's performance. 
+Above we have only trained for 10 epochs, and for a subset of data: `test-0.tfr`  `train-0.tfr`  `valid-0.tfr`. Try out one of the following to see how you might improve the prediction head's performance. (⚠️ make sure to change the checkpoint saving path -- otherwise you might overwrite the default checkpoint that you trained. Same goes for the prediction saving dir as well! you may want to rename the `npy` files that you already obtained)
 
 * Training for more epochs
 * Improving the prediction head architecture
