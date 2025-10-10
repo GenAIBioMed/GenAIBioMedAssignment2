@@ -1,4 +1,4 @@
-# Assignment 2: Fine-Tuning Evo2 on 3D Genome Prediction
+# Assignment 2: Fine-Tuning Evo2 to Predict the 3D Folding of Chromatin
 
 ## Overview
 
