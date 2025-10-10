@@ -11,10 +11,13 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from tqdm import tqdm
 
 from evo2 import Evo2
 
 from datasets.akita_dataset import get_dataloader
+
+# TODO: WANDB INTEGRATION - Import the library
 
 data_path = "/ocean/projects/cis250160p/rhettiar/contact_map_prediction/extra_data.1m/tfrecords"
 
@@ -27,11 +30,14 @@ def main():
     - Evo 2 1B base: Loss ~0.502, Accuracy ~79.56%
     """
     parser = argparse.ArgumentParser(description="Test Evo2 Model Forward Pass")
-    parser.add_argument("--model_name", choices=['evo2_7b', 'evo2_40b', 'evo2_7b_base', 'evo2_40b_base', 'evo2_1b_base'], 
+    parser.add_argument("--model_name", choices=['evo2_7b', 'evo2_40b', 'evo2_7b_base', 'evo2_40b_base', 'evo2_1b_base'],
                        default='evo2_7b',
                        help="Model to test")
     
     args = parser.parse_args()
+
+    # TODO: WANDB INTEGRATION - Initialize a new run
+
     save_path_str = "evo2/contact_map/HFF/model.pt"
     save_path = Path(save_path_str)
     save_path.parent.mkdir(parents=True, exist_ok=True)
@@ -53,8 +59,12 @@ def main():
     val_loss = 10000
     dic = {0: "A", 1: "C", 2: "G", 3: "T"}
     
-    for epoch in range(1, 2):
-        for i, batch in enumerate(train_loader):
+    for epoch in range(1, 10):
+        task_layer.train() # Set model to training mode
+        
+        # Wrap train_loader with tqdm for a progress bar
+        train_pbar = tqdm(train_loader, desc=f"Epoch {epoch} | Training", unit="batch")
+        for batch in train_pbar:
             # zero the parameter gradients
             optimizer.zero_grad()
             
@@ -84,15 +94,21 @@ def main():
             loss = F.mse_loss(outs, scores)
             loss.backward()
             optimizer.step()
-            
-            print("Epoch=%d, Step=%d, loss=%f" % (epoch, i, loss.cpu().item()))
-            sys.stdout.flush()
+
+            # TODO: WANDB INTEGRATION - Log step-wise training loss
+
+            # Update the progress bar with the current loss
+            train_pbar.set_postfix(loss=f"{loss.cpu().item():.4f}")
 
         lr_scheduler.step()
-        
+
+        task_layer.eval() # Set model to evaluation mode
         with torch.no_grad():
             this_val_loss = []
-            for i, batch in enumerate(valid_loader):
+            
+            # Wrap valid_loader with tqdm for a progress bar
+            valid_pbar = tqdm(valid_loader, desc=f"Epoch {epoch} | Validation", unit="batch")
+            for batch in valid_pbar:
                 
                 seq, scores = batch
                 seq_string = [dic[ind.item()] for ind in seq[0]]
@@ -119,13 +135,24 @@ def main():
                 
                 loss = F.mse_loss(outs, scores)
                 this_val_loss.append(loss.cpu().item())
+                
+                # Update the progress bar with the current validation loss
+                valid_pbar.set_postfix(loss=f"{loss.cpu().item():.4f}")
+
             this_val_loss_average = np.average(this_val_loss)
+            current_lr = lr_scheduler.get_last_lr()[0]
+            
+            # TODO: WANDB INTEGRATION - Log epoch-wise validation loss and learning rate (make sure to log the epoch number as well)
+
             if this_val_loss_average < val_loss:
                 val_loss = this_val_loss_average
                 torch.save(task_layer, save_path)
-            
-            print("Epoch=%d, val loss=%f" % (epoch, val_loss))
-            sys.stdout.flush()
-    
+                # TODO: WANDB INTEGRATION - Log the best validation loss so far
+
+            # Print the final validation loss for the epoch
+            print(f"Epoch {epoch} final validation loss: {val_loss:.4f}")
+
+    # TODO: WANDB INTEGRATION - Finish the run
+
 if __name__ == "__main__":
     main()
