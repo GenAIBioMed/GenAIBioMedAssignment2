@@ -6,7 +6,7 @@ The [`DNALongBench`](https://www.biorxiv.org/content/10.1101/2025.01.06.631595v1
 
 ![DNALongBench Overview](https://github.com/ma-compbio/DNALONGBENCH/raw/main/Figure1.v3.png)
 
-In this assignment, you will fine-tune **Evo2** (7B), a state-of-the-art genomic foundation model, on this **Contact Map Prediction** task.
+In this assignment, you will fine-tune **Evo2** (7B), a DNA foundation model, on this **Contact Map Prediction** task.
 
 You will learn to manage a complex deep learning environment, use Weights & Biases (`wandb`) for experiment tracking, and visually analyze the model's predictions to interpret what it has learned.
 
@@ -50,6 +50,9 @@ pip install matplotlib scipy
 
 ### **Fixing a version issue with glibc (follow these instructions carefully)**
 
+![](images/glibc.png ""){ width="400" height="400" }
+
+
 After setting up the environment, you will need to fix a dependency issue.
 Flash-attn package requires `GLIBC_2.32`, while PSC has the version 2.28.
 
@@ -86,13 +89,15 @@ We have downloaded the **Contact Map Prediction** dataset and have placed it in 
 
 The scripts that you will use for fintuning already has this path set as the default data path. Therefore, if you plan to run the scripts on a different cluster make sure to edit `data_path`.
 
-If you are running on PSC, the dataloader will automatically use this path to load the data. If you are running on a different machine, download the dataset from [this link](https://dataverse.harvard.edu/citation?persistentId=doi:10.7910/DVN/AZM25S)
-Note: For reduced train time, we are only using `test-0.tfr`  `train-0.tfr`  `valid-0.tfr` from this contact map dataset.
+If you are running on PSC, the dataloader will automatically use this path to load the data. If you are running on a different machine, download the dataset from [this link](https://dataverse.harvard.edu/citation?persistentId=doi:10.7910/DVN/AZM25S).
+
+**Note:** For reduced train time, we are only using `test-0.tfr`  `train-0.tfr`  `valid-0.tfr` from this contact map dataset.
 
 -----
 
 ## 3\. Finetuning & Evaluation
 
+![](images/train.png ""){ width="400" height="400" }
 
 Clone this assignemnt 2 repository to your working directory.
 
