@@ -65,11 +65,13 @@ Follow the following steps mentioned in this [github comment](https://github.com
 
 After you perform these steps, in the evo2 environement try running this command `python3 -c "import flash_attn"`. If it succeeds without error, you are good to go! Now you have a conda environment that supports Evo2 and Flash-attn! 
 
-If you are having trouble at this step, make a post on edstem.
+This step is somewhat tricky, if you are having trouble at this step, make a post on edstem.
 
 -----
 
 ## 2\. Data paths and Huggingface cache dir
+
+Great job getting the environment set up! Working through dependency issues is a key skill when setting up advanced deep learning models. You often need to spend time reading github issues, searching for similar questions people have faced, and try to narrow down the issue you face.
 
 ### Huggingface Cache Directory (for model weights)
 
