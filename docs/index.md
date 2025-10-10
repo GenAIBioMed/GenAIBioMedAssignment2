@@ -1,4 +1,4 @@
-# Assignment 2: Fine-Tuning Evo2 on 3D Genome Prediction
+# Assignment 2: Using Evo2 embeddings to Predict the 3D Folding of Chromatin
 
 ## Overview
 
@@ -6,7 +6,7 @@ The [`DNALongBench`](https://www.biorxiv.org/content/10.1101/2025.01.06.631595v1
 
 ![DNALongBench Overview](https://github.com/ma-compbio/DNALONGBENCH/raw/main/Figure1.v3.png)
 
-In this assignment, you will fine-tune **Evo2** (7B), a state-of-the-art genomic foundation model, on this **Contact Map Prediction** task.
+In this assignment, you will use **Evo2** (7B), a DNA foundation model, on this **Contact Map Prediction** task. Ideally we would like to finetune the whole 7B model for this task, however, for simplicity, we will use the embeddings of this model to train a lightweight prediction head that learns to map these complex DNA features into a final contact map.
 
 You will learn to manage a complex deep learning environment, use Weights & Biases (`wandb`) for experiment tracking, and visually analyze the model's predictions to interpret what it has learned.
 
@@ -50,10 +50,13 @@ pip install matplotlib scipy
 
 ### **Fixing a version issue with glibc (follow these instructions carefully)**
 
+![](images/glibc.png ""){ width="400" height="400" }
+
+
 After setting up the environment, you will need to fix a dependency issue.
 Flash-attn package requires `GLIBC_2.32`, while PSC has the version 2.28.
 
-Follow the following steps mentioned in this [github comment](https://github.com/Dao-AILab/flash-attention/issues/1708#issuecomment-3283420504): 
+Follow the following steps mentioned in this [github comment](https://github.com/Dao-AILab/flash-attention/issues/1708#issuecomment-3283420504) by `NewComer00`. 
 
 1. Build polyfill-glibc with feat/single-threaded support
 2. Get the path to flash-attn's .so lib
@@ -62,11 +65,13 @@ Follow the following steps mentioned in this [github comment](https://github.com
 
 After you perform these steps, in the evo2 environement try running this command `python3 -c "import flash_attn"`. If it succeeds without error, you are good to go! Now you have a conda environment that supports Evo2 and Flash-attn! 
 
-If you are having trouble at this step, make a post on edstem.
+This step is somewhat tricky, if you are having trouble at this step, make a post on [edstem](https://edstem.org/us/courses/83150/discussion).
 
 -----
 
 ## 2\. Data paths and Huggingface cache dir
+
+Great job getting the environment set up! Working through dependency issues is a key skill when setting up advanced deep learning models. You often need to spend time reading github issues, searching for similar questions people have faced, and try to narrow down the issue you face.
 
 ### Huggingface Cache Directory (for model weights)
 
@@ -82,16 +87,19 @@ This line adds the environment variable to your `.bashrc` file, so it is set aut
 ### Dataset Path
 
 We have downloaded the **Contact Map Prediction** dataset and have placed it in the shared directory (`
-/ocean/projects/cis250160p/rhettiar/contact_map_prediction/`). The scripts that you will use for fintuning already has this path set as the default data path. Therefore, if you plan to run the scripts on a different cluster make sure to edit `data_path`.
+/ocean/projects/cis250160p/rhettiar/contact_map_prediction/`). Try navigating to that directory (`cd`) to check if you can see the dataset. 
 
-If you are running on PSC, the dataloader will automatically use this path to load the data. If you are running on a different machine, download the dataset from [this link](https://dataverse.harvard.edu/citation?persistentId=doi:10.7910/DVN/AZM25S)
+The scripts that you will use for fintuning already has this path set as the default data path. Therefore, if you plan to run the scripts on a different cluster make sure to edit `data_path`.
 
+If you are running on PSC, the dataloader will automatically use this path to load the data. If you are running on a different machine, download the dataset from [this link](https://dataverse.harvard.edu/citation?persistentId=doi:10.7910/DVN/AZM25S).
 
+**Note:** For reduced train time, we are only using `test-0.tfr`  `train-0.tfr`  `valid-0.tfr` from this contact map dataset.
 
 -----
 
 ## 3\. Finetuning & Evaluation
 
+![](images/train.png ""){ width="400" height="400" }
 
 Clone this assignemnt 2 repository to your working directory.
 
@@ -113,7 +121,7 @@ export HF_HOME=/ocean/projects/cis250160p/rhettiar
 python finetune_contact_map.py
 ```
 
-After training is complete, use your best model checkpoint to run the evaluation script.
+After training is complete, use your best model checkpoint to run the evaluation script (this will saved model predictions and groundtruth as .npy files).
 
 ```bash
 conda activate evo2
@@ -121,6 +129,8 @@ module load cuda/12.4.0
 export HF_HOME=/ocean/projects/cis250160p/rhettiar
 python evaluate_contact_map.py
 ```
+
+(Optional): Above we have only trained for 10 epochs, and for a subset of data: `test-0.tfr`  `train-0.tfr`  `valid-0.tfr`.  If you are interested in exploring further, consider how you might improve the model's performance. For example, you could try training on more [data](https://dataverse.harvard.edu/citation?persistentId=doi:10.7910/DVN/AZM25S) (all train-*.tfr files) or for more epochs.
 
 #### Visualize Predictions & Analyze Performance
 
@@ -130,14 +140,14 @@ Your script must perform two key tasks:
 
 1.  **Calculate Overall Performance:**
     * Load the `pred.npy` and `target.npy` files.
-    * Iterate through every sample in the test set. For each sample, calculate the Pearson (PCC) and Spearman (SCC) correlation coefficient between the predicted and the ground truth contact map.
-    * Compute the **average PCC and SCC** across the *entire* test set. These values represent your model's overall performance.
+    * Iterate through every sample in the test set. For each sample, calculate the Pearson (PCC) between the predicted and the ground truth contact map.
+    * Compute the **average PCC** across the *entire* test set. These values represent your model's overall performance.
 
 2.  **Generate a Representative Visualization:**
     * After calculating all scores, find a single genomic region from the test set that demonstrates good performance (e.g., its score is near or above the average).
     * Generate a plot for this single example. The figure should contain two subplots: the **Ground Truth** map and your **Finetuned Prediction**.
     * Use `matplotlib.pyplot.imshow` to display the 50x50 matrices.
-    * Clearly label each subplot with the specific PCC and SCC calculated for that individual example.
+    * Clearly label each subplot with the specific PCC for that individual example.
 
 ---
 
@@ -150,8 +160,9 @@ Compress the following into a single **zip file** for submission.
     * `analyze_performance.py` (the script you wrote for calculation and visualization).
 
 2.  **PDF Report:** Your report must include:
-    * A link to your public `wandb` experiment's report showing your training curves.
-    * **Overall Performance Metrics:** State the **average PCC and SCC** you calculated across the entire test set.
+    * Report the final loss you achieve.
+    * A link to your public `wandb` [experiment's report](https://docs.wandb.ai/guides/reports/create-a-report/) showing your training curves.
+    * **Overall Performance Metrics:** State the **average PCC** you calculated across the entire test set.
     * **Representative Visualization:** Include the visualization figure you generated for a single, high-performing example. Ensure the subplots are clearly labeled with their specific scores.
     * **Written Analysis:** Your analysis should address the following points in a few short paragraphs:
         1.  **Performance Comparison:** Based on your average scores, does your fine-tuned Evo2 model achieve better or worse performance than the CNN baseline reported in the DNALongBench [paper](https://www.biorxiv.org/content/10.1101/2025.01.06.631595v1.full.pdf)?
