@@ -112,7 +112,7 @@ Your first task is to edit the finetuning code (`finetune_contact_map.py`). Fill
 
 ### b) Run Finetuning & Evaluation
 
-Activate your `evo2` environment and run the fine-tuning script. The script is configured to use the evo2_7b model by default. The lines below loads cuda and sets the huggingface cache path to the shared folder.
+Activate your `evo2` environment and run the fine-tuning script. The script is configured to use the evo2_7b model by default. The lines below loads cuda and sets the huggingface cache path to the shared folder. While you can run this through an interactive job, we recommend running as a sbatch job so that the chance of a sudden interruption is low.
 
 ```bash
 conda activate evo2
