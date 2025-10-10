@@ -130,9 +130,15 @@ export HF_HOME=/ocean/projects/cis250160p/rhettiar
 python evaluate_contact_map.py
 ```
 
-(Optional): Above we have only trained for 10 epochs, and for a subset of data: `test-0.tfr`  `train-0.tfr`  `valid-0.tfr`.  If you are interested in exploring further, consider how you might improve the model's performance. For example, you could try training on more [data](https://dataverse.harvard.edu/citation?persistentId=doi:10.7910/DVN/AZM25S) (all train-*.tfr files) or for more epochs.
+### c) Towards better performance
 
-#### Visualize Predictions & Analyze Performance
+Above we have only trained for 10 epochs, and for a subset of data: `test-0.tfr`  `train-0.tfr`  `valid-0.tfr`. Try out one of the follwing to see how you might improve the prediction head's performance. 
+
+* Training for more epochs
+* Improving the prediction head architecture
+* Including more [data](https://dataverse.harvard.edu/citation?persistentId=doi:10.7910/DVN/AZM25S) (all train-*.tfr files). (You will need to download more files, e.g. train-1.tfr, train-2.tfr and then copy them to your scratch folder -- `/ocean/projects/cis250160p/<username>`, then update the path variable in the scripts)
+
+### d) Visualize Predictions & Analyze Performance
 
 The `evaluate_contact_map.py` script saves the raw prediction and target data. You will create a new Python script (e.g., `analyze_performance.py`) to process these files.
 
@@ -159,9 +165,14 @@ Compress the following into a single **zip file** for submission.
     * `finetune_contact_map.py` (with `wandb` integration).
     * `analyze_performance.py` (the script you wrote for calculation and visualization).
 
-2.  **PDF Report:** Your report must include:
-    * Report the final loss you achieve.
-    * A link to your public `wandb` [experiment's report](https://docs.wandb.ai/guides/reports/create-a-report/) showing your training curves.
+2.  **PDF Report:** 
+
+    Your report must include the following for each of the two conditions: 1) default number of epochs, 2) one option you tried in [section 3c](#c-towards-better-performance) (state what you tried).
+
+
+    * Report the final loss you achieve
+    * A link to your public `wandb` [experiment's report](https://docs.wandb.ai/guides/reports/create-a-report/) showing your training curves. Here's an [example](https://wandb.ai/ramith-mit/ML_10701_HW4/reports/Example-Public-Report--VmlldzoxNDY4MjUxOQ?accessToken=id622t0rr03mvjbmgkd3lxre2f73q0zwan2s5c2zxx4r02yowsb1bpkc6tor1aj9).
+
     * **Overall Performance Metrics:** State the **average PCC** you calculated across the entire test set.
     * **Representative Visualization:** Include the visualization figure you generated for a single, high-performing example. Ensure the subplots are clearly labeled with their specific scores.
     * **Written Analysis:** Your analysis should address the following points in a few short paragraphs:
