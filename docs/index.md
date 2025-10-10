@@ -24,10 +24,14 @@ srun --partition=GPU-shared --gres=gpu:h100-80:1 --time=0:20:00 --account=cis250
 ### Evo2 Environment (for model fine-tuning)
 
 ```bash
+module load anaconda3/2024.10-1
+module load cuda/12.4.0
+
 conda create -n evo2 python=3.12 -y
 conda activate evo2
 
-conda install -c nvidia cuda-nvcc cuda-cudart-dev
+
+
 conda install -c conda-forge transformer-engine-torch=2.3.0
 pip install flash-attn==2.8.0.post2 --no-build-isolation
 
@@ -56,15 +60,17 @@ After you perform these steps, in the evo2 environement try running this command
 
 ### Huggingface Cache Directory
 
-We have already downloaded the Evo2 model weights. Therefore run this command to make sure huggingface looks at the correct location for the model weights. Otherwise it will download the weights to your home directory which has limited space.
+We have downloaded the Evo2 model weight on PSC. Therefore run this command to make sure huggingface looks at the correct location for the model weights. Otherwise it will download the weights to your home directory which has limited space.
 
 ```bash
 echo 'export HF_HOME=/ocean/projects/cis250160p/rhettiar' >> ~/.bashrc;
 ```
 
-### Huggingface Cache Directory
+This line adds the environment variable to your `.bashrc` file, so it is set automatically in future sessions. After completing the assignment, remove this line from your `.bashrc`.
 
-We have already downloaded the **Contact Map Prediction** dataset and have placed it in the shared directory (`
+### Dataset Path
+
+We have downloaded the **Contact Map Prediction** dataset and have placed it in the shared directory (`
 /ocean/projects/cis250160p/rhettiar/contact_map_prediction/`). 
 
 If you are running on PSC, the dataloader will automatically use this path to load the data. If you are running on a different machine, download the dataset from [this link](https://dataverse.harvard.edu/citation?persistentId=doi:10.7910/DVN/AZM25S)
