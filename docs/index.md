@@ -75,7 +75,7 @@ Great job getting the environment set up! Working through dependency issues is a
 
 ### Huggingface Cache Directory (for model weights)
 
-We have downloaded the Evo2 model weight on PSC. Therefore run this command to make sure huggingface looks at the correct location for the model weights. Otherwise it will download the weights to your home directory which has limited space.
+We have downloaded the Evo2 7B model weights on PSC. Therefore run this command to make sure huggingface looks at the correct location for the model weights. Otherwise it will download the weights to your home directory which has limited space.
 
 ```bash
 export HF_HOME=/ocean/projects/cis250160p/rhettiar
