@@ -1,4 +1,4 @@
-# Assignment 2: Fine-Tuning Evo2 to Predict the 3D Folding of Chromatin
+# Assignment 2: Using Evo2 embeddings to Predict the 3D Folding of Chromatin
 
 ## Overview
 
@@ -6,7 +6,7 @@ The [`DNALongBench`](https://www.biorxiv.org/content/10.1101/2025.01.06.631595v1
 
 ![DNALongBench Overview](https://github.com/ma-compbio/DNALONGBENCH/raw/main/Figure1.v3.png)
 
-In this assignment, you will fine-tune **Evo2** (7B), a DNA foundation model, on this **Contact Map Prediction** task.
+In this assignment, you will fine-tune **Evo2** (7B), a DNA foundation model, on this **Contact Map Prediction** task. Ideally we would like to finetune the whole 7B model for this task, however, for simplicity, we will use the embeddings of this model to train a lightweight prediction head that learns to map these complex DNA features into a final contact map.
 
 You will learn to manage a complex deep learning environment, use Weights & Biases (`wandb`) for experiment tracking, and visually analyze the model's predictions to interpret what it has learned.
 
@@ -129,6 +129,8 @@ module load cuda/12.4.0
 export HF_HOME=/ocean/projects/cis250160p/rhettiar
 python evaluate_contact_map.py
 ```
+
+(Optional): Above we have only trained for 10 epochs, and for a subset of data: `test-0.tfr`  `train-0.tfr`  `valid-0.tfr`.  If you are interested in exploring further, consider how you might improve the model's performance. For example, you could try training on more [data](https://dataverse.harvard.edu/citation?persistentId=doi:10.7910/DVN/AZM25S) (all train-*.tfr files) or for more epochs.
 
 #### Visualize Predictions & Analyze Performance
 
