@@ -87,8 +87,7 @@ We have downloaded the **Contact Map Prediction** dataset and have placed it in 
 The scripts that you will use for fintuning already has this path set as the default data path. Therefore, if you plan to run the scripts on a different cluster make sure to edit `data_path`.
 
 If you are running on PSC, the dataloader will automatically use this path to load the data. If you are running on a different machine, download the dataset from [this link](https://dataverse.harvard.edu/citation?persistentId=doi:10.7910/DVN/AZM25S)
-
-
+Note: For reduced train time, we are only using `test-0.tfr`  `train-0.tfr`  `valid-0.tfr` from this contact map dataset.
 
 -----
 
@@ -152,7 +151,8 @@ Compress the following into a single **zip file** for submission.
     * `analyze_performance.py` (the script you wrote for calculation and visualization).
 
 2.  **PDF Report:** Your report must include:
-    * A link to your public `wandb` experiment's report showing your training curves.
+    * Report the final loss you achieve.
+    * A link to your public `wandb` [experiment's report](https://docs.wandb.ai/guides/reports/create-a-report/) showing your training curves.
     * **Overall Performance Metrics:** State the **average PCC** you calculated across the entire test set.
     * **Representative Visualization:** Include the visualization figure you generated for a single, high-performing example. Ensure the subplots are clearly labeled with their specific scores.
     * **Written Analysis:** Your analysis should address the following points in a few short paragraphs:
