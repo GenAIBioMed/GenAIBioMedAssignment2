@@ -1,3 +1,7 @@
+'''
+Code adapted from https://github.com/ma-compbio/DNALONGBENCH
+'''
+
 import argparse
 import csv
 import sys

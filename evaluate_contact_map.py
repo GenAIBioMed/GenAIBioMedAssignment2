@@ -1,3 +1,7 @@
+'''
+Code adapted from https://github.com/ma-compbio/DNALONGBENCH
+'''
+
 import argparse
 import csv
 from pathlib import Path
@@ -27,7 +31,7 @@ def main():
                        help="Model to test")
     
     args = parser.parse_args()
-    for cell in ["HFF", 'H1hESC', 'GM12878', 'IMR90', 'HCT116']:
+    for cell in ["HFF"]:
         print(cell)
         
         save_path = "evo2/contact_map/{}/model.pt".format(cell)
@@ -39,7 +43,7 @@ def main():
 
         test_loader = get_dataloader(f"{data_path}/test-*.tfr", cell)
 
-        task_layer = torch.load(save_path).to("cuda")
+        task_layer = torch.load(save_path, weights_only=False).to("cuda")
         task_layer.eval()  # or model.train() depending on use
         dic = {0: "A", 1: "C", 2: "G", 3: "T"}
         prediction = []
