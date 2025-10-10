@@ -28,8 +28,10 @@ def main():
                        help="Model to test")
     
     args = parser.parse_args()
-    save_path = "evo2/contact_map/HFF/model.pt"
-    
+    save_path_str = "evo2/contact_map/HFF/model.pt"
+    save_path = Path(save_path_str)
+    save_path.parent.mkdir(parents=True, exist_ok=True)
+
     # Set random seeds
     torch.manual_seed(1)
     torch.cuda.manual_seed(1)
