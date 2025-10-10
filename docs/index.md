@@ -82,7 +82,9 @@ This line adds the environment variable to your `.bashrc` file, so it is set aut
 ### Dataset Path
 
 We have downloaded the **Contact Map Prediction** dataset and have placed it in the shared directory (`
-/ocean/projects/cis250160p/rhettiar/contact_map_prediction/`). The scripts that you will use for fintuning already has this path set as the default data path. Therefore, if you plan to run the scripts on a different cluster make sure to edit `data_path`.
+/ocean/projects/cis250160p/rhettiar/contact_map_prediction/`). Try navigating to that directory (`cd`) to check if you can see the dataset. 
+
+The scripts that you will use for fintuning already has this path set as the default data path. Therefore, if you plan to run the scripts on a different cluster make sure to edit `data_path`.
 
 If you are running on PSC, the dataloader will automatically use this path to load the data. If you are running on a different machine, download the dataset from [this link](https://dataverse.harvard.edu/citation?persistentId=doi:10.7910/DVN/AZM25S)
 
@@ -113,7 +115,7 @@ export HF_HOME=/ocean/projects/cis250160p/rhettiar
 python finetune_contact_map.py
 ```
 
-After training is complete, use your best model checkpoint to run the evaluation script.
+After training is complete, use your best model checkpoint to run the evaluation script (this will saved model predictions and groundtruth as .npy files).
 
 ```bash
 conda activate evo2
@@ -130,14 +132,14 @@ Your script must perform two key tasks:
 
 1.  **Calculate Overall Performance:**
     * Load the `pred.npy` and `target.npy` files.
-    * Iterate through every sample in the test set. For each sample, calculate the Pearson (PCC) and Spearman (SCC) correlation coefficient between the predicted and the ground truth contact map.
-    * Compute the **average PCC and SCC** across the *entire* test set. These values represent your model's overall performance.
+    * Iterate through every sample in the test set. For each sample, calculate the Pearson (PCC) between the predicted and the ground truth contact map.
+    * Compute the **average PCC** across the *entire* test set. These values represent your model's overall performance.
 
 2.  **Generate a Representative Visualization:**
     * After calculating all scores, find a single genomic region from the test set that demonstrates good performance (e.g., its score is near or above the average).
     * Generate a plot for this single example. The figure should contain two subplots: the **Ground Truth** map and your **Finetuned Prediction**.
     * Use `matplotlib.pyplot.imshow` to display the 50x50 matrices.
-    * Clearly label each subplot with the specific PCC and SCC calculated for that individual example.
+    * Clearly label each subplot with the specific PCC for that individual example.
 
 ---
 
@@ -151,7 +153,7 @@ Compress the following into a single **zip file** for submission.
 
 2.  **PDF Report:** Your report must include:
     * A link to your public `wandb` experiment's report showing your training curves.
-    * **Overall Performance Metrics:** State the **average PCC and SCC** you calculated across the entire test set.
+    * **Overall Performance Metrics:** State the **average PCC** you calculated across the entire test set.
     * **Representative Visualization:** Include the visualization figure you generated for a single, high-performing example. Ensure the subplots are clearly labeled with their specific scores.
     * **Written Analysis:** Your analysis should address the following points in a few short paragraphs:
         1.  **Performance Comparison:** Based on your average scores, does your fine-tuned Evo2 model achieve better or worse performance than the CNN baseline reported in the DNALongBench [paper](https://www.biorxiv.org/content/10.1101/2025.01.06.631595v1.full.pdf)?
