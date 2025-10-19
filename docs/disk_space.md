@@ -23,7 +23,7 @@ Storage quota: 1.95TiB
   Inodes used: 1,293,748
 ```
 
-If you are low on space, here are two ways to fix it:
+If you are low on space, here are three ways to fix it:
 
 1.  **Remove Old Conda Environments**
 You may have environments from previous assignments that you no longer need. First, list all your environments to see what you have:
