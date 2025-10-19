@@ -14,9 +14,12 @@ You will learn to manage a complex deep learning environment, use Weights & Bias
 
 ## 1. Environment Setup
 
-**IMPORTANT:** This assignment requires access to **NVIDIA H100 GPUs** (Since Evo2 requires device compute capability 8.9 or higher required for FP8 execution). 
+==**IMPORTANT Note 1:** This assignment requires access to **NVIDIA H100 GPUs** (Since Evo2 requires device compute capability 8.9 or higher required for FP8 execution). 
+You must first request a GPU node on the cluster *before* setting up the Conda environments. This ensures that Conda can [correctly detect the CUDA toolkit](https://github.com/conda-forge/tensorflow-feedstock/issues/174#issuecomment-1031003478).==
 
-You must first request a GPU node on the cluster *before* setting up the Conda environments. This ensures that Conda can [correctly detect the CUDA toolkit](https://github.com/conda-forge/tensorflow-feedstock/issues/174#issuecomment-1031003478).
+==**IMPORTANT Note 2:** This assignment needs at least 18GB for the evo2 environment, [read this](disk_space.md) on how to get some free space on your PSC home directory.==
+
+---
 
 **Example: Requesting a GPU Node (SLURM)**
 
@@ -135,11 +138,14 @@ python evaluate_contact_map.py
 
 ### c) Towards better performance
 
-Above we have only trained for 10 epochs, and for a subset of data: `test-0.tfr`  `train-0.tfr`  `valid-0.tfr`. Try out one of the following to see how you might improve the prediction head's performance. (⚠️ make sure to change the checkpoint saving path -- otherwise you might overwrite the default checkpoint that you trained. Same goes for the prediction saving dir as well! you may want to rename the `npy` files that you already obtained)
+Above we have only trained for 10 epochs, and for a subset of data: `test-0.tfr`  `train-0.tfr`  `valid-0.tfr`. Try out one of the following to see how you might improve the prediction head's performance. 
 
 * Training for more epochs
 * Improving the prediction head architecture
 * Including more [data](https://dataverse.harvard.edu/citation?persistentId=doi:10.7910/DVN/AZM25S) (all train-*.tfr files). (You will need to download more files, e.g. train-1.tfr, train-2.tfr and then copy them to your scratch folder -- `/ocean/projects/cis250160p/<username>`, then update the path variable in the scripts)
+
+
+==(⚠️ make sure to change the checkpoint saving path -- otherwise you might overwrite the default checkpoint that you trained. Same goes for the prediction saving dir as well! you may want to rename the `npy` files that you already obtained)==
 
 ### d) Visualize Predictions & Analyze Performance
 

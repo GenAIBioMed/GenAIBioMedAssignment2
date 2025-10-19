@@ -1,6 +1,7 @@
 site_name: CMU 11781/02741 Generative AI for Biomedicine 2025 Fall Assignments
 nav:
   - Home: index.md
+  - Note on Disk Space: disk_space.md
 site_url: https://https://genaibiomed.github.io/GenAIBioMedAssignment2
 theme:
   name: material
@@ -14,6 +15,7 @@ markdown_extensions:
   - attr_list
   - pymdownx.superfences
   - pymdownx.arithmatex
+  - pymdownx.mark
   - pymdownx.highlight:
       anchor_linenums: true
       line_spans: __span
