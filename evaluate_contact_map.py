@@ -62,8 +62,8 @@ def main():
                     
             layer_name = 'blocks.28.mlp.l3'
             outputs, embeddings = model(input_ids, return_embeddings=True, layer_names=[layer_name])
-            hiddens = embeddings[layer_name]  # [1, 102400, 4096]
-            hiddens = torch.mean(hiddens.reshape(hiddens.size(0), -1, 2048, hiddens.size(-1)), dim=2)  # [B, 50, dim]
+            hiddens = embeddings[layer_name]
+            hiddens = torch.mean(hiddens.reshape(hiddens.size(0), -1, 2048, hiddens.size(-1)), dim=2)
             norm = torch.sqrt(torch.sum(hiddens * hiddens, dim=-1)).unsqueeze(-1) # [B, L]
             norm = torch.bmm(norm, norm.transpose(1, 2))
             outs = (torch.bmm(hiddens, hiddens.transpose(1, 2))/norm).reshape(hiddens.size(0), -1)
@@ -71,7 +71,7 @@ def main():
             vec1 = matrix.view(-1, 1, hiddens.size(-1)).repeat(1, hiddens.size(1), 1).transpose(0, 1)
             vec2 = matrix.view(-1, 1, hiddens.size(-1)).repeat(1, hiddens.size(1), 1)
             vec3 = torch.cat((vec2, vec1), dim=-1).reshape(-1, hiddens.size(-1)*2)
-            outs = task_layer(vec3.float()).unsqueeze(0).squeeze(-1) #[1, 50*50]]
+            outs = task_layer(vec3.float()).unsqueeze(0).squeeze(-1)
             
             preds = []
             tgt = []

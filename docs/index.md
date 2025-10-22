@@ -161,7 +161,7 @@ Your script must perform two key tasks:
 2.  **Generate a Representative Visualization:**
     * After calculating all scores, find a single genomic region from the test set that demonstrates good performance (e.g., its score is near or above the average).
     * Generate a plot for this single example. The figure should contain two subplots: the **Ground Truth** map and your **Finetuned Prediction**.
-    * Use `matplotlib.pyplot.imshow` to display the 50x50 matrices.
+    * Use `matplotlib.pyplot.imshow` to display the ~~50x50~~ $40x40$ matrices.
     * Clearly label each subplot with the specific PCC for that individual example.
 
 ---
